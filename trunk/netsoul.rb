@@ -19,8 +19,7 @@ module NetSoul
   class NetSoul
     include Singleton
 
-    # attr_accessor :sock
-    attr_reader :connection_values, :authenticated, :sock
+    attr_reader :connection_values, :sock
 
     def initialize(config_hash) #TODO : describe the config hash array.
       @config = config_hash
@@ -39,6 +38,7 @@ module NetSoul
       @connection_values[:md5_hash] = md5_hash
       @connection_values[:client_ip] = client_ip
       @connection_values[:client_port] = client_port
+      @connection_values[:client_name] = @config.conf[:client_name]
       @connection_values[:login] = @config.conf[:login]
       @connection_values[:socks_password] = @config.conf[:socks_password]
       @connection_values[:unix_password] = @config.conf[:unix_password]
@@ -74,7 +74,7 @@ module NetSoul
 
     def disconnect
       sock_send(Message.ns_exit())
-      sock_close rescue nil
+      sock_close()
     end
 
     def sock_send(str)
@@ -103,7 +103,7 @@ module NetSoul
       return 'ext_user_log %s %s %s %s'%[	connection_values[:login],
       auth_string,
       Message.escape(Location::get(connection_values[:client_ip]) == "ext" ? connection_values[:location] : Location::get(connection_values[:client_ip])),
-    Message.escape("#{RsConfig::APP_NAME} #{RsConfig::APP_VERSION}")]
+    Message.escape(connection_values[:client_name])]
   end
 
   def self.kerberos_authentication(connection_values)
@@ -120,7 +120,7 @@ module NetSoul
       puts "Impossible to retrieve the kerberos token !!!"
       return
     end
-    return 'ext_user_klog %s %s %s %s %s'%[tk.token_base64.slice(0, 812), Message.escape(connection_values[:system]), Message.escape(connection_values[:location]), Message.escape(connection_values[:user_group]), Message.escape("#{RsConfig::APP_NAME} #{RsConfig::APP_VERSION}")]
+    return 'ext_user_klog %s %s %s %s %s'%[tk.token_base64.slice(0, 812), Message.escape(connection_values[:system]), Message.escape(connection_values[:location]), Message.escape(connection_values[:user_group]), Message.escape(connection_values[:client_name])]
   end
 
   def self.send_message(user, msg)

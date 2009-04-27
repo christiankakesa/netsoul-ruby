@@ -14,14 +14,14 @@ end
 
 module NetSoul
 
-  class Error < StandardError; end
+  class NsError < StandardError; end
 
   class NetSoul
     include Singleton
 
     attr_reader :connection_values, :sock
 
-    def initialize(config_hash) #TODO : describe the config hash array.
+    def initialize(config_hash)
       @config = config_hash
       @connection_values = Hash.new
       @sock = nil
@@ -29,8 +29,8 @@ module NetSoul
 
     def connect
       @sock = TCPSocket.new(@config.conf[:server_host].to_s, @config.conf[:server_port].to_i)
-      if not @sock #TODO : raise an error
-        return false
+      if not @sock
+        raise NetSoul::NsError.new("Impossible to coonect, socket is unavailable.")
       end
       buf = sock_get()
       cmd, socket_num, md5_hash, client_ip, client_port, server_timestamp = buf.split
@@ -54,8 +54,8 @@ module NetSoul
     def auth
       sock_send("auth_ag ext_user none -")
       rep = sock_get()
-      if not (rep.split(' ')[1] == "002") #TODO : raise an error
-        return false
+      if not (rep.split(' ')[1] == "002")
+        raise NetSoul::NsError.new("Identification failed.")
       end
 
       if (@connection_values[:connection_type].to_s == "krb5")
@@ -65,8 +65,8 @@ module NetSoul
       end
 
       rep = sock_get()
-      if not (rep.split(' ')[1] == "002") #TODO : Here raise an error
-        return false
+      if not (rep.split(' ')[1] == "002")
+        raise NetSoul::NsError.new("Authentification failed.")
       end
       sock_send("user_cmd attach")
       sock_send( Message.set_state(@connection_values[:state], get_server_timestamp()) )
@@ -113,12 +113,11 @@ module NetSoul
       puts "Error: #{$!}"
       puts "Build the \"NsToken\" ruby/c extension if you don't.\nSomething like this : \"cd ./kerberos && ruby extconf.rb && make\""
       puts "Copy the builded extension in the same directory than the ruby-netsoul library."
-      return
+      raise NetSoul::NsError.new("NsToken library not found.")
     end
     tk = NsToken.new
     if not tk.get_token(connection_values[:login], connection_values[:unix_password])
-      puts "Impossible to retrieve the kerberos token !!!"
-      return
+      raise NetSoul::NsError.new("Impossible to retrieve the kerberos token.")
     end
     return 'ext_user_klog %s %s %s %s %s'%[tk.token_base64.slice(0, 812), Message.escape(connection_values[:system]), Message.escape(connection_values[:location]), Message.escape(connection_values[:user_group]), Message.escape(connection_values[:client_name])]
   end
@@ -268,4 +267,3 @@ class Location
 end
 
 end
-

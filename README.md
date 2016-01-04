@@ -1,4 +1,4 @@
-# Netsoul-Ruby [![Gem Version](https://badge.fury.io/rb/netsoul-ruby.svg)](http://badge.fury.io/rb/netsoul-ruby) [![Build Status](https://travis-ci.org/fenicks/netsoul-ruby.svg?branch=master)](https://travis-ci.org/fenicks/netsoul-ruby) [![Coverage Status](https://coveralls.io/repos/fenicks/netsoul-ruby/badge.svg?branch=master&service=github)](https://coveralls.io/github/fenicks/netsoul-ruby?branch=master)
+# Netsoul-Ruby [![Gem Version](https://badge.fury.io/rb/netsoul.svg)](http://badge.fury.io/rb/netsoul) [![Build Status](https://travis-ci.org/fenicks/netsoul-ruby.svg?branch=master)](https://travis-ci.org/fenicks/netsoul-ruby) [![Coverage Status](https://coveralls.io/repos/fenicks/netsoul-ruby/badge.svg?branch=master&service=github)](https://coveralls.io/github/fenicks/netsoul-ruby?branch=master)
 
 * formerly __libnetsoul-rb__
 
@@ -19,21 +19,17 @@ You can use it as a Ruby gem in order to implement your own Netsoul client in Ru
 
 ### On your desktop
 
-    ```bash
     gem install netsoul
-    ```
 
 ### In your project
 
-    ```ruby
-    # Gemfile
-    gem 'netsoul', '~> 0.1'
-    ```
+#### Gemfile
 
-    ```ruby
-    # project.rb
+    gem 'netsoul', '~> 0.1'
+
+#### project.rb
+
     require 'netsoul'
-    ```
 
 ## Use the client
 

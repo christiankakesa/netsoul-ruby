@@ -17,22 +17,22 @@
 
 void	display_status(k_data_t *data)
 {
-	OM_uint32	minor, status;
-	gss_buffer_desc	msg;
+    OM_uint32	    minor, status;
+    gss_buffer_desc	msg;
 
-	gss_display_status(&minor, data->min, GSS_C_GSS_CODE, GSS_C_NO_OID, &status, &msg);
-	if (msg.value) puts(msg.value);
+    gss_display_status(&minor, data->min, GSS_C_GSS_CODE, GSS_C_NO_OID, &status, &msg);
+    if (msg.value) puts(msg.value);
 }
 
-krb5_error_code	get_new_tickets(	k_data_t *data,
-					krb5_context context,
-					krb5_principal principal,
-					krb5_ccache ccache)
+krb5_error_code	get_new_tickets(k_data_t *data,
+                                krb5_context context,
+                                krb5_principal principal,
+                                krb5_ccache ccache)
 {
-   krb5_error_code		ret;
-   krb5_get_init_creds_opt	opt;
-   krb5_creds			cred;
-//   char *			password = NULL;
+   krb5_error_code		   ret;
+   krb5_get_init_creds_opt opt;
+   krb5_creds			   cred;
+//   char                    *password = NULL;
 
    memset(&cred, 0, sizeof(cred));
    krb5_get_init_creds_opt_init (&opt);
@@ -55,16 +55,16 @@ krb5_error_code	get_new_tickets(	k_data_t *data,
       return (3);
    if (krb5_cc_store_cred(context, ccache, &cred))
       return (3);
-   //krb5_free_creds_contents(context, &cred);
+   // krb5_free_creds_contents(context, &cred);
    return (0);
 }
 
 int	my_init(k_data_t *data)
 {
-   krb5_error_code               ret;
-   krb5_context                  context;
-   krb5_ccache                   ccache;
-   krb5_principal                principal;
+   krb5_error_code ret;
+   krb5_context    context;
+   krb5_ccache     ccache;
+   krb5_principal  principal;
 
    if (krb5_init_context(&context))
       return (1);
@@ -84,62 +84,62 @@ int	my_init(k_data_t *data)
 
 void	import_name(k_data_t *data)
 {
-	OM_uint32		min;
-	OM_uint32		maj;
-	gss_buffer_desc		buf;
+    OM_uint32		min;
+    OM_uint32		maj;
+    gss_buffer_desc	buf;
 
-	buf.value = (unsigned char *) strdup(NS_SERVICE_NAME);
-	buf.length = strlen((const char*)buf.value) + 1;
-	maj = gss_import_name(&min, &buf, GSS_C_NT_HOSTBASED_SERVICE, &data->gss_name);
+    buf.value = (unsigned char *) strdup(NS_SERVICE_NAME);
+    buf.length = strlen((const char*)buf.value) + 1;
+    maj = gss_import_name(&min, &buf, GSS_C_NT_HOSTBASED_SERVICE, &data->gss_name);
 
-	if (maj != GSS_S_COMPLETE)
-	      display_status(data);
+    if (maj != GSS_S_COMPLETE)
+          display_status(data);
 }
 
 void	init_context(k_data_t *data)
 {
-	OM_uint32	maj;
-	/* gss_buffer_t	itoken      = GSS_C_NO_BUFFER; */
-	krb5_enctype	etypes[]    = { ENCTYPE_DES3_CBC_SHA1, ENCTYPE_NULL };
-	int		etype_count = sizeof(etypes) / sizeof(*etypes);
-	gss_cred_id_t	credh;
+    OM_uint32	maj;
+    /* gss_buffer_t	itoken      = GSS_C_NO_BUFFER; */
+    krb5_enctype	etypes[]    = { ENCTYPE_DES3_CBC_SHA1, ENCTYPE_NULL };
+    int		etype_count = sizeof(etypes) / sizeof(*etypes);
+    gss_cred_id_t	credh;
 
-	maj = gss_acquire_cred(	&data->min,
-				GSS_C_NO_NAME,
-				GSS_C_INDEFINITE,
-				GSS_C_NO_OID_SET,
-				GSS_C_INITIATE,
-				&credh,
-				NULL,
-				NULL);
-	if (maj != GSS_S_COMPLETE)
-	{
-		display_status(data);
-		return;
-	}
-	maj = gss_krb5_set_allowable_enctypes(&data->min, credh, etype_count, etypes);
-	if (maj != GSS_S_COMPLETE)
-	{
-		display_status(data);
-		return;
-	}
-	data->ctx = GSS_C_NO_CONTEXT;
-	maj = gss_init_sec_context(	&data->min,
-					credh,
-					&data->ctx,
-					data->gss_name,
-					GSS_C_NO_OID,
-					GSS_C_CONF_FLAG,
-					0,
-					GSS_C_NO_CHANNEL_BINDINGS,
-					data->itoken,
-					NULL,
-					&data->otoken,
-					NULL,
-					NULL);
+    maj = gss_acquire_cred(	&data->min,
+                GSS_C_NO_NAME,
+                GSS_C_INDEFINITE,
+                GSS_C_NO_OID_SET,
+                GSS_C_INITIATE,
+                &credh,
+                NULL,
+                NULL);
+    if (maj != GSS_S_COMPLETE)
+    {
+        display_status(data);
+        return;
+    }
+    maj = gss_krb5_set_allowable_enctypes(&data->min, credh, etype_count, etypes);
+    if (maj != GSS_S_COMPLETE)
+    {
+        display_status(data);
+        return;
+    }
+    data->ctx = GSS_C_NO_CONTEXT;
+    maj = gss_init_sec_context(	&data->min,
+                    credh,
+                    &data->ctx,
+                    data->gss_name,
+                    GSS_C_NO_OID,
+                    GSS_C_CONF_FLAG,
+                    0,
+                    GSS_C_NO_CHANNEL_BINDINGS,
+                    data->itoken,
+                    NULL,
+                    &data->otoken,
+                    NULL,
+                    NULL);
 
-	if (data->maj != GSS_S_COMPLETE)
-		display_status(data);
+    if (data->maj != GSS_S_COMPLETE)
+        display_status(data);
 }
 
 int	check_tokens(k_data_t *data)
@@ -162,45 +162,45 @@ int	check_tokens(k_data_t *data)
 /**
  * Encode string in base64
  */
-unsigned char * base64_encode(const unsigned char *src, size_t len, size_t *out_len)
+unsigned char* base64_encode(const unsigned char *src, size_t len, size_t *out_len)
 {
-	unsigned char *out, *pos;
-	const unsigned char *end, *in;
-	size_t olen;
-	int line_len;
-	const unsigned char base64_table[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    unsigned char *out, *pos;
+    const unsigned char *end, *in;
+    size_t olen;
+    int line_len;
+    const unsigned char base64_table[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-	olen = len * 4 / 3 + 4; /* 3-byte blocks to 4-byte */
-	out = malloc(olen);
-	if (out == NULL)
-		return NULL;
+    olen = len * 4 / 3 + 4; /* 3-byte blocks to 4-byte */
+    out = malloc(olen);
+    if (out == NULL)
+        return NULL;
 
-	end = src + len;
-	in = src;
-	pos = out;
-	while (end - in >= 3) {
-		*pos++ = base64_table[in[0] >> 2];
-		*pos++ = base64_table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
-		*pos++ = base64_table[((in[1] & 0x0f) << 2) | (in[2] >> 6)];
-		*pos++ = base64_table[in[2] & 0x3f];
-		in += 3;
-	}
+    end = src + len;
+    in = src;
+    pos = out;
+    while (end - in >= 3) {
+        *pos++ = base64_table[in[0] >> 2];
+        *pos++ = base64_table[((in[0] & 0x03) << 4) | (in[1] >> 4)];
+        *pos++ = base64_table[((in[1] & 0x0f) << 2) | (in[2] >> 6)];
+        *pos++ = base64_table[in[2] & 0x3f];
+        in += 3;
+    }
 
-	if (end - in) {
-		*pos++ = base64_table[in[0] >> 2];
-		if (end - in == 1) {
-			*pos++ = base64_table[(in[0] & 0x03) << 4];
-			*pos++ = '=';
-		} else {
-			*pos++ = base64_table[((in[0] & 0x03) << 4) |
-					      (in[1] >> 4)];
-			*pos++ = base64_table[(in[1] & 0x0f) << 2];
-		}
-		*pos++ = '=';
-		line_len += 4;
-	}
+    if (end - in) {
+        *pos++ = base64_table[in[0] >> 2];
+        if (end - in == 1) {
+            *pos++ = base64_table[(in[0] & 0x03) << 4];
+            *pos++ = '=';
+        } else {
+            *pos++ = base64_table[((in[0] & 0x03) << 4) |
+                          (in[1] >> 4)];
+            *pos++ = base64_table[(in[1] & 0x0f) << 2];
+        }
+        *pos++ = '=';
+        line_len += 4;
+    }
 
-	if (out_len)
-		*out_len = pos - out;
-	return out;
+    if (out_len)
+        *out_len = pos - out;
+    return out;
 }

@@ -21,11 +21,11 @@
 
 typedef struct k_data
 {
-	char*		login;
-	char*		unix_pass;
-	OM_uint32	min;
-	OM_uint32	maj;
-	gss_name_t	gss_name;
+	char*		    login;
+	char*		    unix_pass;
+	OM_uint32	    min;
+	OM_uint32	    maj;
+	gss_name_t	    gss_name;
 	gss_ctx_id_t	ctx;
 	gss_buffer_t	itoken;
 	gss_buffer_desc	otoken;
@@ -35,10 +35,10 @@ void
 display_status(k_data_t *data);
 
 krb5_error_code
-get_new_tickets(	k_data_t *data,
-			krb5_context context,
-			krb5_principal principal,
-			krb5_ccache ccache);
+get_new_tickets(k_data_t *data,
+			    krb5_context context,
+			    krb5_principal principal,
+			    krb5_ccache ccache);
 
 int
 my_init(k_data_t *data);

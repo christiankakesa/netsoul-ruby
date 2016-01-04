@@ -3,11 +3,11 @@
 lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
-require 'base64'
-require 'digest/md5'
-require 'netsoul'
+require 'netsoul/config'
+require 'netsoul/errors'
+require 'netsoul/logging'
+require 'netsoul/message'
 require 'socket'
-require 'uri'
 
 module Netsoul
   class Client
@@ -82,41 +82,42 @@ module Netsoul
   end
 end
 
-# if __FILE__ == $PROGRAM_NAME
-  $stderr.sync = true
-  require 'optparse'
-  require 'yaml'
+$stderr.sync = true
+require 'optparse'
+require 'yaml'
 
-  options = {}
-  OptionParser.new do |opts|
-    opts.banner = 'Usage: netsoul-ruby [options]'.freeze
-    opts.separator "\nNetsoul-Ruby options:".freeze
-    opts.on('-c'.freeze, '--config FILE'.freeze, 'Configuration file in YAML'.freeze) do |file|
-      options[:config] = file
-      unless File.file?(options[:config])
-        puts '[ERROR] Configuration is not a valid file'
-        exit
-      end
-      options[:user_opts] = YAML.load_file(options[:config])
-    end
-    opts.on('-h', '--help', 'Display this screen') do
-      puts opts
+options = {}
+OptionParser.new do |opts|
+  opts.banner = 'Usage: netsoul-ruby [options]'.freeze
+  opts.separator ''.freeze
+  opts.separator 'Netsoul-Ruby options:'.freeze
+
+  opts.on('-c'.freeze, '--config FILE'.freeze, 'Configuration file in YAML'.freeze) do |file|
+    options[:config] = file
+    unless File.file?(options[:config])
+      puts '[ERROR] Configuration is not a valid file'
       exit
     end
-  end.parse!
+    options[:user_opts] = YAML.load_file(options[:config])
+  end
 
-  unless options.include?(:config)
-    puts '[ERROR] Configuration file is not provided'
+  opts.on('-h', '--help', 'Display this screen') do
+    puts opts
     exit
   end
+end.parse!
 
-  c = Netsoul::Client.new options[:user_opts]
-  c.connect
-  if c.started
-    loop do
-      res = c.sock_get
-      c.sock_send res if res.to_s.match(/^ping.*/)
-      sleep 1
-    end
+unless options.include?(:config)
+  puts '[ERROR] Configuration file is not provided'
+  exit
+end
+
+c = Netsoul::Client.new options[:user_opts]
+c.connect
+if c.started
+  loop do
+    res = c.sock_get
+    c.sock_send res if res.to_s.match(/^ping.*/)
+    sleep 1
   end
-# end
+end

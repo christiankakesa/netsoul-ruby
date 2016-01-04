@@ -1,4 +1,6 @@
-# Netsoul-Ruby (formerly libnetsoul-rb) [![Gem Version](https://badge.fury.io/rb/netsoul-ruby.svg)](http://badge.fury.io/rb/netsoul-ruby) [![Build Status](https://travis-ci.org/fenicks/netsoul-ruby.svg?branch=master)](https://travis-ci.org/fenicks/netsoul-ruby) [![Coverage Status](https://coveralls.io/repos/fenicks/netsoul-ruby/badge.svg?branch=master&service=github)](https://coveralls.io/github/fenicks/netsoul-ruby?branch=master)
+# Netsoul-Ruby [![Gem Version](https://badge.fury.io/rb/netsoul-ruby.svg)](http://badge.fury.io/rb/netsoul-ruby) [![Build Status](https://travis-ci.org/fenicks/netsoul-ruby.svg?branch=master)](https://travis-ci.org/fenicks/netsoul-ruby) [![Coverage Status](https://coveralls.io/repos/fenicks/netsoul-ruby/badge.svg?branch=master&service=github)](https://coveralls.io/github/fenicks/netsoul-ruby?branch=master)
+
+* formerly __libnetsoul-rb__
 
 This gem is a simple and efficient Netsoul client implementation written in Ruby.
 You can use it as a Ruby gem in order to implement your own Netsoul client in Ruby or just use the provided Netsoul client.

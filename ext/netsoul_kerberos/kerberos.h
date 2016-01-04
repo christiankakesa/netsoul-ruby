@@ -1,7 +1,7 @@
 /*
 ** This file is part of RubySoul project.
 **
-** Test for the kerberos authentification.
+** Test for the kerberos authentication.
 **
 ** @author Christian KAKESA <christian.kakesa@gmail.com>
 */

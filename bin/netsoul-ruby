@@ -1,0 +1,122 @@
+#!/usr/bin/env ruby
+# -*- encoding: binary -*-
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
+
+require 'base64'
+require 'digest/md5'
+require 'netsoul'
+require 'socket'
+require 'uri'
+
+module Netsoul
+  class Client
+    include Logging
+
+    attr_reader :started
+
+    def initialize(*args)
+      opts = args.last.is_a?(Hash) ? args.last : {}
+      @config = Config.new(opts)
+      @started = false
+    end
+
+    def auth_ag
+      sock_send(Message.auth_ag)
+      fail Netsoul::IdentificationError, 'Identification failed.'.freeze unless sock_get.split(' ')[1] == '002'.freeze
+    end
+    private :auth_ag
+
+    def auth_method
+      if @config.auth_method == :krb5
+        sock_send(Message.kerberos_auth(@config))
+      else
+        sock_send(Message.standard_auth(@config))
+      end
+      fail Netsoul::AuthenticationError, 'Authentication failed.'.freeze unless sock_get.split(' ')[1] == '002'
+    end
+    private :auth_method
+
+    def auth_status
+      sock_send(Message.attach)
+      sock_send(Message.user_state(@config.state, Time.now.to_i))
+    end
+    private :auth_status
+
+    def connect
+      @sock = TCPSocket.new(@config.server_host, @config.server_port)
+      fail Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @sock
+
+      _cmd, _socket_num, md5_hash, client_ip, client_port, _server_timestamp = sock_get.split
+      @config.build_user_connection_info md5_hash: md5_hash, client_ip: client_ip, client_port: client_port
+
+      auth_ag
+      auth_method
+      auth_status
+      @started = true
+    end
+
+    def disconnect
+      sock_send(Message.ns_exit)
+    ensure
+      sock_close
+    end
+
+    def sock_send(str)
+      log :info, "[send] #{str.chomp}"
+      @sock.puts str
+    end
+
+    def sock_get
+      res = @sock.gets
+      log :info, "[get ] #{res.chomp}"
+      res
+    end
+
+    def sock_close
+      @started = false
+      @sock.close
+    rescue
+      nil
+    end
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  $stderr.sync = true
+  require 'optparse'
+  require 'yaml'
+
+  options = {}
+  OptionParser.new do |opts|
+    opts.banner = 'Usage: netsoul-ruby [options]'.freeze
+    opts.separator "\nNetsoul-Ruby options:".freeze
+    opts.on('-c'.freeze, '--config FILE'.freeze, 'Configuration file in YAML'.freeze) do |file|
+      options[:config] = file
+      unless File.file?(options[:config])
+        puts '[ERROR] Configuration is not a valid file'
+        exit
+      end
+      options[:user_opts] = YAML.load_file(options[:config])
+    end
+    opts.on('-h', '--help', 'Display this screen') do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  unless options.include?(:config)
+    puts '[ERROR] Configuration file is not provided'
+    exit
+  end
+
+  c = Netsoul::Client.new options[:user_opts]
+  c.connect
+  if c.started
+    loop do
+      res = c.sock_get
+      c.sock_send res if res.to_s.match(/^ping.*/)
+      sleep 1
+    end
+  end
+end

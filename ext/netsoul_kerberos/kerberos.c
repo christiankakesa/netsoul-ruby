@@ -1,7 +1,7 @@
 /*
 ** This file is part of RubySoul project.
 **
-** Test for the kerberos authentification.
+** Test for the kerberos authentication.
 **
 ** @author Christian KAKESA <christian.kakesa@gmail.com>
 */
@@ -22,8 +22,6 @@ void	display_status(k_data_t *data)
 
 	gss_display_status(&minor, data->min, GSS_C_GSS_CODE, GSS_C_NO_OID, &status, &msg);
 	if (msg.value) puts(msg.value);
-	gss_display_status(&minor, data->maj, GSS_C_GSS_CODE, GSS_C_NO_OID, &status, &msg);
-	if (msg.value) puts(msg.value);
 }
 
 krb5_error_code	get_new_tickets(	k_data_t *data,
@@ -34,7 +32,7 @@ krb5_error_code	get_new_tickets(	k_data_t *data,
    krb5_error_code		ret;
    krb5_get_init_creds_opt	opt;
    krb5_creds			cred;
-   char *			password = NULL;
+//   char *			password = NULL;
 
    memset(&cred, 0, sizeof(cred));
    krb5_get_init_creds_opt_init (&opt);
@@ -72,7 +70,7 @@ int	my_init(k_data_t *data)
       return (1);
 
    if (!data->login ||
-       krb5_build_principal(context, &principal, sizeof (NS_REALM) - 1, NS_REALM, data->login, 0))
+       krb5_build_principal(context, &principal, sizeof(NS_REALM) - 1, NS_REALM, data->login, NULL))
       return (1);
    if (krb5_cc_default(context, &ccache))
       return (1);
@@ -83,7 +81,6 @@ int	my_init(k_data_t *data)
    krb5_free_context(context);
    return (ret);
 }
-
 
 void	import_name(k_data_t *data)
 {

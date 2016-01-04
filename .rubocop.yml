@@ -21,4 +21,4 @@ Style/Documentation:
 
 AllCops:
   Excludes:
-    - 'bin/**'
+    - 'bin/**/*'

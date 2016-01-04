@@ -3,11 +3,7 @@ module Netsoul
     class << self
       def get(ip)
         locations.each do |key, val|
-          res = ip.match(/^#{val}/)
-          if res
-            res = "#{key}"
-            return res
-          end
+          return "#{key}".freeze if ip.match(/^#{val}/)
         end
         'ext'.freeze
       end

@@ -1,3 +1,9 @@
+require 'base64'
+require 'digest/md5'
+require 'uri'
+
+require_relative 'location'
+
 module Netsoul
   class Message
     class << self
@@ -9,16 +15,13 @@ module Netsoul
       end
 
       def standard_auth(config)
-        login = config.login
         client_ip = config.user_connection_info[:client_ip]
-        user_custom_location = config.location
-        location = Message.escape(Location.get(client_ip) == 'ext'.freeze ? user_custom_location : Location.get(client_ip))
+        location = Message.escape(Location.get(client_ip) == 'ext'.freeze ? config.location : Location.get(client_ip))
         client_name = Message.escape(config.client_name)
-        "ext_user_log #{login} #{_standard_auth_string(config)} #{client_name} #{location}"
+        "ext_user_log #{config.login} #{_standard_auth_string(config)} #{client_name} #{location}"
       end
 
       def _kerberos_get
-        require 'netsoul_kerberos'
         @netsoul_kerberos ||= NetsoulKerberos.new
       rescue LoadError => e
         raise Netsoul::Error, "NetsoulKerberos library not found: #{e}.".freeze
@@ -32,6 +35,8 @@ module Netsoul
       end
 
       def kerberos_auth(config)
+        require 'netsoul_kerberos'
+
         unless _kerberos_get.build_token(config.login, config.unix_password)
           fail Netsoul::Error, 'Impossible to retrieve the kerberos token.'.freeze
         end
@@ -39,7 +44,7 @@ module Netsoul
       end
 
       def auth_ag
-        'auth_ag ext_user none -'.freeze
+        'auth_ag ext_user none none'.freeze
       end
 
       def send_message(user, msg)

@@ -16,8 +16,8 @@ module Netsoul
 
       def standard_auth(config)
         client_ip = config.user_connection_info[:client_ip]
-        location = Message.escape(Location.get(client_ip) == 'ext'.freeze ? config.location : Location.get(client_ip))
-        client_name = Message.escape(config.client_name)
+        location = Message._escape(Location.get(client_ip) == 'ext'.freeze ? config.location : Location.get(client_ip))
+        client_name = Message._escape(config.client_name)
         "ext_user_log #{config.login} #{_standard_auth_string(config)} #{client_name} #{location}"
       end
 
@@ -28,10 +28,10 @@ module Netsoul
       end
 
       def _kerberos_auth_klog(config)
-        location = Message.escape(config.location)
-        user_group = Message.escape(config.user_group)
-        client_name = Message.escape(config.client_name)
-        "ext_user_klog #{_kerberos_get.token_base64.slice(0, 812)} #{Message.escape(RUBY_PLATFORM)} #{location} #{user_group} #{client_name}"
+        location = Message._escape(config.location)
+        user_group = Message._escape(config.user_group)
+        client_name = Message._escape(config.client_name)
+        "ext_user_klog #{_kerberos_get.token_base64.slice(0, 812)} #{Message._escape(RUBY_PLATFORM)} #{location} #{user_group} #{client_name}"
       end
 
       def kerberos_auth(config)
@@ -48,7 +48,7 @@ module Netsoul
       end
 
       def send_message(user, msg)
-        "user_cmd msg_user #{user} msg #{Message.escape(msg.to_s)}"
+        "user_cmd msg_user #{user} msg #{Message._escape(msg.to_s)}"
       end
 
       def start_writing_to_user(user)
@@ -80,11 +80,11 @@ module Netsoul
       end
 
       def user_data(data)
-        "user_cmd user_data #{Message.escape(data.to_s)}"
+        "user_cmd user_data #{Message._escape(data.to_s)}"
       end
 
       def xfer(user, id, filename, size, desc)
-        "user_cmd msg_user #{user} desoul_ns_xfer #{Message.escape("#{id} #{filename} #{size} #{desc}")}"
+        "user_cmd msg_user #{user} desoul_ns_xfer #{Message._escape("#{id} #{filename} #{size} #{desc}")}"
       end
 
       def desoul_ns_xfer(user, id, filename, size, desc)
@@ -100,7 +100,7 @@ module Netsoul
       end
 
       def xfer_data(user, id, data)
-        "user_cmd msg_user #{user} desoul_ns_xfer_data #{Message.escape("#{id} #{Base64.b64encode(data.to_s, data.to_s.length)}")}"
+        "user_cmd msg_user #{user} desoul_ns_xfer_data #{Message._escape("#{id} #{Base64.b64encode(data.to_s, data.to_s.length)}")}"
       end
 
       def desoul_ns_xfer_data(user, id, data)
@@ -123,25 +123,13 @@ module Netsoul
         'exit'.freeze
       end
 
-      def escape(str)
+      def _escape(str)
         str = URI.escape(str, Regexp.new("#{URI::PATTERN::ALNUM}[:graph:][:punct:][:cntrl:][:print:][:blank:]", false, 'N'.freeze))
         URI.escape(str, Regexp.new("[^#{URI::PATTERN::ALNUM}]", false, 'N'.freeze))
       end
 
-      def unescape(str)
+      def _unescape(str)
         URI.unescape str
-      end
-
-      def ltrim(str)
-        str.to_s.gsub(/^\s+/, ''.freeze)
-      end
-
-      def rtrim(str)
-        str.to_s.gsub(/\s+$/, ''.freeze)
-      end
-
-      def trim(str)
-        rtrim(ltrim(str.to_s))
       end
     end
   end

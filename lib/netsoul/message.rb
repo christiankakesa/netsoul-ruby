@@ -84,35 +84,19 @@ module Netsoul
       end
 
       def xfer(user, id, filename, size, desc)
-        "user_cmd msg_user #{user} desoul_ns_xfer #{Message._escape("#{id} #{filename} #{size} #{desc}")}"
-      end
-
-      def desoul_ns_xfer(user, id, filename, size, desc)
-        xfer(user, id, filename, size, desc)
+        "user_cmd msg_user #{user} xfer #{Message._escape("#{id} #{filename} #{size} #{desc}")}"
       end
 
       def xfer_accept(user, id)
-        "user_cmd msg_user #{user} desoul_ns_xfer_accept #{id}"
-      end
-
-      def desoul_ns_xfer_accept(user, id)
-        xfer_accept(user, id)
+        "user_cmd msg_user #{user} xfer_accept #{id}"
       end
 
       def xfer_data(user, id, data)
-        "user_cmd msg_user #{user} desoul_ns_xfer_data #{Message._escape("#{id} #{Base64.b64encode(data.to_s, data.to_s.length)}")}"
-      end
-
-      def desoul_ns_xfer_data(user, id, data)
-        xfer_data(user, id, data)
+        "user_cmd msg_user #{user} xfer_data #{Message._escape("#{id} #{Base64.b64encode(data.to_s, data.to_s.length)}")}"
       end
 
       def xfer_cancel(user, id)
-        "user_cmd msg_user #{user} desoul_ns_xfer_cancel #{id}"
-      end
-
-      def desoul_ns_xfer_cancel(user, id)
-        xfer_cancel(user, id)
+        "user_cmd msg_user #{user} xfer_cancel #{id}"
       end
 
       def ping

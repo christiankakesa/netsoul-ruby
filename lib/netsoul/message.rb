@@ -21,6 +21,7 @@ module Netsoul
         "ext_user_log #{config.login} #{_standard_auth_string(config)} #{client_name} #{location}"
       end
 
+      # :nocov:
       def _kerberos_get
         @netsoul_kerberos ||= NetsoulKerberos.new
       rescue LoadError => e
@@ -42,6 +43,7 @@ module Netsoul
         end
         _kerberos_auth_klog(config)
       end
+      # :nocov:
 
       def auth_ag
         'auth_ag ext_user none none'.freeze

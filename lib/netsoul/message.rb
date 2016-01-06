@@ -92,7 +92,7 @@ module Netsoul
       end
 
       def xfer_data(user, id, data)
-        "user_cmd msg_user #{user} xfer_data #{Message._escape("#{id} #{Base64.b64encode(data.to_s, data.to_s.length)}")}"
+        "user_cmd msg_user #{user} xfer_data #{Message._escape("#{id} #{Base64.encode64(data.to_s)}")}"
       end
 
       def xfer_cancel(user, id)

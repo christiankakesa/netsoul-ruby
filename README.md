@@ -35,41 +35,41 @@ You can use it as a Ruby gem in order to implement your own Netsoul client in Ru
 
 After installing the gem **netsoul**, call the client as described bellow.
 
-    ```bash
-    netsoul-ruby -config netsoul-config.yml
-    ```
+```bash
+netsoul-ruby -config netsoul-config.yml
+```
 
 ### Example of _netsoul-config.yml_ file
 
 #### Standard (MD5) authentication
 
-    ```yaml
-    ---|
-    :login: 'kakesa_c'
-    :socks_password: 'my socks password'
-    # :unix_password: 'unix password needed for kerberos authentication' # :auth_method must be set to :krb5
-    # :auth_method: :std # :std, :krb5
-    # :server_host: 'ns-server.epita.fr'
-    # :server_port: 4242
-    # :state: :none # :actif, :away, :connection, :idle, :lock, :server, :none
-    # :location: 'Home'
-    # :user_group: 'ETNA_2008'
-    ```
+```yaml
+---|
+:login: 'kakesa_c'
+:socks_password: 'my socks password'
+# :unix_password: 'unix password needed for kerberos authentication' # :auth_method must be set to :krb5
+# :auth_method: :std # :std, :krb5
+# :server_host: 'ns-server.epita.fr'
+# :server_port: 4242
+# :state: :none # :actif, :away, :connection, :idle, :lock, :server, :none
+# :location: 'Home'
+# :user_group: 'ETNA_2008'
+```
 
 #### Kerberos authentication
 
-    ```yaml
-    ---|
-    :login: 'kakesa_c'
-    :unix_password: 'unix password'
-    :auth_method: :krb5 # :std, :krb5
-    # :socks_password: 'my socks password'
-    # :server_host: 'ns-server.epita.fr'
-    # :server_port: 4242
-    # :state: :none # :actif, :away, :connection, :idle, :lock, :server, :none
-    # :location: 'Home'
-    # :user_group: 'ETNA_2008'
-    ```
+```yaml
+---|
+:login: 'kakesa_c'
+:unix_password: 'unix password'
+:auth_method: :krb5 # :std, :krb5
+# :socks_password: 'my socks password'
+# :server_host: 'ns-server.epita.fr'
+# :server_port: 4242
+# :state: :none # :actif, :away, :connection, :idle, :lock, :server, :none
+# :location: 'Home'
+# :user_group: 'ETNA_2008'
+```
 
 ## Use the library in custom Netsoul Ruby client
 

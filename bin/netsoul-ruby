@@ -114,7 +114,7 @@ end
 
 retry_count = 10
 retry_wait_time = 1.0
-RETRY_WAIT_FACTOR = 1.25 # Each time retry is called 'retry_wait_time' is increased with this factor
+RETRY_WAIT_FACTOR = 1.25 # Each time retry is called in Exception, current 'retry_wait_time' is increased with this factor
 begin
   c = Netsoul::Client.new options[:user_opts]
   c.connect

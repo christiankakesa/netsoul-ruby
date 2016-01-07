@@ -112,12 +112,30 @@ unless options.include?(:config)
   exit
 end
 
-c = Netsoul::Client.new options[:user_opts]
-c.connect
-if c.started
-  loop do
-    res = c.sock_get
-    c.sock_send res if res.to_s.match(/^ping.*/)
-    sleep 1
+retry_count = 10
+retry_wait_time = 1.0
+RETRY_WAIT_FACTOR = 1.25 # Each time retry is called 'retry_wait_time' is increased with this factor
+begin
+  c = Netsoul::Client.new options[:user_opts]
+  c.connect
+  if c.started
+    retry_count = 10
+    retry_wait_time = 1.0
+    loop do
+      res = c.sock_get
+      c.sock_send res if res.to_s.match(/^ping.*/)
+      sleep 1
+    end
+  end
+rescue => e
+  puts "[ERROR]: #{e}"
+  puts "[RETRY_COUNT]: #{retry_count}"
+  c.disconnect
+  c = nil
+  if retry_count > 0
+    retry_count -= 1
+    retry_wait_time *= RETRY_WAIT_FACTOR
+    sleep retry_count
+    retry
   end
 end

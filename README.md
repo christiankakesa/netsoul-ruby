@@ -19,17 +19,23 @@ You can use it as a Ruby gem in order to implement your own Netsoul client in Ru
 
 ### On your desktop
 
-    gem install netsoul
+```ruby
+gem install netsoul
+```
 
 ### In your project
 
 #### Gemfile
 
-    gem 'netsoul', '~> 0.1'
+```ruby
+gem 'netsoul', '~> 1.2'
+```
 
 #### project.rb
 
-    require 'netsoul'
+```ruby
+require 'netsoul'
+```
 
 ## Use the client
 
@@ -73,7 +79,8 @@ netsoul-ruby -config netsoul-config.yml
 
 ## Use the library in custom Netsoul Ruby client
 
-__[TODO]__
+Look at the client implementation in this gem: [https://github.com/fenicks/netsoul-ruby/blob/master/bin/netsoul-ruby]().
+This client is implemented in less than 150 lines of code.
 
 ## Contributing
 

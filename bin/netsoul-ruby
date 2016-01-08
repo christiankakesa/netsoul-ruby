@@ -13,6 +13,9 @@ module Netsoul
   class Client
     include Logging
 
+    SOCKET_READ_TIMEOUT = 10 * 60
+    SOCKET_WRITE_TIMEOUT = 10
+
     attr_reader :started
 
     def initialize(*args)
@@ -46,10 +49,8 @@ module Netsoul
     def connect
       @sock = TCPSocket.new(@config.server_host, @config.server_port)
       fail Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @sock
-
       _cmd, _socket_num, md5_hash, client_ip, client_port, _server_timestamp = sock_get.split
       @config.build_user_connection_info md5_hash: md5_hash, client_ip: client_ip, client_port: client_port
-
       auth_ag
       auth_method
       auth_status
@@ -63,12 +64,16 @@ module Netsoul
     end
 
     def sock_send(str)
+      _, sock = IO.select(nil, [@sock], nil, SOCKET_WRITE_TIMEOUT)
+      fail Netsoul::SocketError, 'Timeout or fail on write socket' if sock.nil? || sock.empty?
+      sock.first.puts str
       log :info, "[send] #{str.chomp}"
-      @sock.puts str
     end
 
     def sock_get
-      res = @sock.gets
+      sock, = IO.select([@sock], nil, nil, SOCKET_READ_TIMEOUT)
+      fail Netsoul::SocketError, 'Timeout or fail on read socket' if sock.nil? || sock.empty?
+      res = sock.first.gets
       log :info, "[get ] #{res.chomp}"
       res
     end
@@ -113,8 +118,8 @@ unless options.include?(:config)
 end
 
 retry_count = 10
-retry_wait_time = 1.0
-RETRY_WAIT_FACTOR = 1.25 # Each time retry is called in Exception, current 'retry_wait_time' is increased with this factor
+retry_wait_time = 10.0
+RETRY_WAIT_FACTOR = 1.50 # Each time retry is called in Exception, current 'retry_wait_time' is increased with this factor
 begin
   c = Netsoul::Client.new options[:user_opts]
   c.connect
@@ -127,15 +132,18 @@ begin
       sleep 1
     end
   end
+rescue Interrupt
+  c.disconnect if c.started
+  puts '!!! [SIGINT] !!!'
+  exit 42
 rescue => e
-  puts "[ERROR]: #{e}"
-  puts "[RETRY_COUNT]: #{retry_count}"
+  puts "[ERROR]: #{e} - [RETRY_COUNT]: #{retry_count}"
   c.disconnect
   c = nil
   if retry_count > 0
     retry_count -= 1
     retry_wait_time *= RETRY_WAIT_FACTOR
-    sleep retry_wait_time
-    retry
+    sleep(retry_wait_time) && retry
   end
+  exit 42
 end

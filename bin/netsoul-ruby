@@ -135,7 +135,7 @@ rescue => e
   if retry_count > 0
     retry_count -= 1
     retry_wait_time *= RETRY_WAIT_FACTOR
-    sleep retry_count
+    sleep retry_wait_time
     retry
   end
 end

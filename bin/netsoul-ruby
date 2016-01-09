@@ -13,11 +13,9 @@ require 'socket'
 module Netsoul
   class Client
     include Logging
-
+    attr_reader :started
     SOCKET_READ_TIMEOUT = 12 * 60
     SOCKET_WRITE_TIMEOUT = 10
-
-    attr_reader :started
 
     def initialize(*args)
       opts = args.last.is_a?(Hash) ? args.last : {}
@@ -37,7 +35,7 @@ module Netsoul
       else
         sock_send(Message.standard_auth(@config))
       end
-      fail Netsoul::AuthenticationError, 'Authentication failed.'.freeze unless sock_get.split(' ')[1] == '002'
+      fail Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze unless sock_get.split(' ')[1] == '002'
     end
     private :auth_method
 
@@ -111,10 +109,11 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD).include?(k) } == 2 ||
-       ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } == 3
-  puts '[ERROR] You have to specify a configuration file or environment variables'
-  exit
+if options.empty? || options[:user_opts].size == 0
+  unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } >= 2
+    puts '[ERROR] You have to specify a configuration file or environment variables'
+    exit
+  end
 end
 
 retry_count = 10

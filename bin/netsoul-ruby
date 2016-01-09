@@ -51,10 +51,13 @@ module Netsoul
       @sock = TCPSocket.new(@config.server_host, @config.server_port)
       fail Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @sock
       _cmd, _socket_num, md5_hash, client_ip, client_port, _server_timestamp = sock_get.split
+
       @config.build_user_connection_info md5_hash: md5_hash, client_ip: client_ip, client_port: client_port
+
       auth_ag
       auth_method
       auth_status
+
       @started = true
     end
 
@@ -75,8 +78,8 @@ module Netsoul
       sock, = IO.select([@sock], nil, nil, SOCKET_READ_TIMEOUT)
       fail Netsoul::SocketError, 'Timeout or fail on read socket' if sock.nil? || sock.empty?
       res = sock.first.gets
-      log :info, "[get ] #{res.chomp}"
-      res
+      log :info, "[get ] #{res.chomp}" if res
+      res || ''
     end
 
     def sock_close
@@ -99,12 +102,7 @@ OptionParser.new do |opts|
   opts.separator 'Netsoul-Ruby options:'.freeze
 
   opts.on('-c'.freeze, '--config FILE'.freeze, 'Configuration file in YAML'.freeze) do |file|
-    options[:config] = file
-    unless File.file?(options[:config])
-      puts '[ERROR] Configuration is not a valid file'
-      exit
-    end
-    options[:user_opts] = YAML.load_file(options[:config])
+    options[:user_opts] = YAML.load_file(file) if File.file?(file)
   end
 
   opts.on('-h', '--help', 'Display this screen') do
@@ -113,8 +111,9 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-unless options.include?(:config)
-  puts '[ERROR] Configuration file is not provided'
+unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD).include?(k) } == 2 ||
+       ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } == 3
+  puts '[ERROR] You have to specify a configuration file or environment variables'
   exit
 end
 

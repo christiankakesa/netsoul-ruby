@@ -14,7 +14,7 @@ module Netsoul
   class Client
     include Logging
 
-    SOCKET_READ_TIMEOUT = 10 * 60
+    SOCKET_READ_TIMEOUT = 12 * 60
     SOCKET_WRITE_TIMEOUT = 10
 
     attr_reader :started

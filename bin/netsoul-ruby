@@ -3,6 +3,7 @@
 lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
+require 'English'
 require 'netsoul/config'
 require 'netsoul/errors'
 require 'netsoul/logging'
@@ -137,7 +138,7 @@ rescue Interrupt
   puts '!!! [SIGINT] !!!'
   exit 42
 rescue => e
-  puts "[ERROR]: #{e} - [RETRY_COUNT]: #{retry_count}"
+  puts "[ERROR]: #{e}#{$INPUT_RECORD_SEPARATOR}[RETRY_COUNT]: #{retry_count}"
   c.disconnect
   c = nil
   if retry_count > 0

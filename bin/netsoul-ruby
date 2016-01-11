@@ -132,13 +132,13 @@ begin
     end
   end
 rescue Interrupt
-  c.disconnect if c.started
+  begin c.disconnect; end
   puts '!!! [SIGINT] !!!'
   exit 42
 rescue => e
-  puts "[ERROR]: #{e}#{$INPUT_RECORD_SEPARATOR}[RETRY_COUNT]: #{retry_count}"
-  c.disconnect
-  c = nil
+  puts "[ERROR]: #{e}"
+  puts "[RETRY_COUNT]: #{retry_count}"
+  begin c.disconnect; end
   if retry_count > 0
     retry_count -= 1
     retry_wait_time *= RETRY_WAIT_FACTOR

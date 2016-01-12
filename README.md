@@ -50,7 +50,6 @@ netsoul-ruby -config netsoul-config.yml
 #### Standard (MD5) authentication
 
 ```yaml
----|
 :login: 'kakesa_c'
 :socks_password: 'my socks password'
 # :unix_password: 'unix password needed for kerberos authentication' # :auth_method must be set to :krb5
@@ -65,7 +64,6 @@ netsoul-ruby -config netsoul-config.yml
 #### Kerberos authentication
 
 ```yaml
----|
 :login: 'kakesa_c'
 :unix_password: 'unix password'
 :auth_method: :krb5 # :std, :krb5

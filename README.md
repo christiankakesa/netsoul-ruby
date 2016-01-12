@@ -28,7 +28,7 @@ gem install netsoul
 #### Gemfile
 
 ```ruby
-gem 'netsoul', '~> 1.3'
+gem 'netsoul', '~> 1.9.1'
 ```
 
 #### project.rb

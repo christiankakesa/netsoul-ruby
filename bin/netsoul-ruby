@@ -3,7 +3,6 @@
 lib = File.expand_path('../../lib', __FILE__)
 $LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
-require 'English'
 require 'netsoul/config'
 require 'netsoul/errors'
 require 'netsoul/logging'
@@ -93,6 +92,9 @@ $stderr.sync = true
 require 'optparse'
 require 'yaml'
 
+process_name_string = "#{__FILE__} #{ARGV.join(' ')}".freeze
+Process.respond_to?(:setproctitle) ? Process.setproctitle(process_name_string) : $PROGRAM_NAME = process_name_string
+
 options = {}
 OptionParser.new do |opts|
   opts.banner = 'Usage: netsoul-ruby [options]'.freeze
@@ -105,14 +107,13 @@ OptionParser.new do |opts|
 
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
-    exit
+    exit 42
   end
 end.parse!
-
 if options.empty? || options[:user_opts].size == 0
   unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } >= 2
     puts '[ERROR] You have to specify a configuration file or environment variables'
-    exit
+    exit 42
   end
 end
 

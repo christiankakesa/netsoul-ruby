@@ -86,7 +86,24 @@ netsoul-ruby -config netsoul-config.yml
 ## Use the library in custom Netsoul Ruby client
 
 Look at the client implementation in this gem: [https://github.com/fenicks/netsoul-ruby/blob/master/bin/netsoul-ruby]().
-This client is implemented in less than 150 lines of code ; including option parser, client reconnection, ...
+This client is implemented in less than 80 lines of code ; including option parser, client reconnection, ...
+
+```ruby
+require 'netsou/client'
+
+c = Netsoul::Client.new options[:user_opts]
+c.connect
+# ...
+if c.started
+  # ...
+  c.sock_send str
+  # ...
+  msg = c.sock_get
+  #...
+end
+# ...
+c.disconnect
+```
 
 ## Contributing
 

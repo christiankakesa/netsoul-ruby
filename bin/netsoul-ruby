@@ -45,8 +45,8 @@ begin
     retry_count = 10
     retry_wait_time = 1.0
     loop do
-      res = c.sock_get
-      c.sock_send res if res.to_s.match(/^ping.*/)
+      res = c.get
+      c.send res if res.to_s.match(/^ping.*/)
       sleep 1
     end
   end

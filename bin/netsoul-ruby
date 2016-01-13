@@ -22,7 +22,7 @@ OptionParser.new do |opts|
     options[:user_opts] = YAML.load_file(file) if File.file?(file)
   end
 
-  opts.on('-h', '--help', 'Display this screen') do
+  opts.on('-h'.freeze, '--help', 'Display this screen'.freeze) do
     puts opts
     exit 42
   end
@@ -30,7 +30,7 @@ end.parse!
 
 if options.empty? || options[:user_opts].size == 0
   unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } >= 2
-    puts '[ERROR] You have to specify a configuration file or environment variables'
+    puts '[ERROR] You have to specify a configuration file or environment variables'.freeze
     exit 42
   end
 end
@@ -52,7 +52,7 @@ begin
   end
 rescue Interrupt
   begin c.disconnect; end
-  puts '!!! [SIGINT] !!!'
+  puts '!!! [SIGINT] !!!'.freeze
   exit 42
 rescue => e
   puts "[ERROR]: #{e}"

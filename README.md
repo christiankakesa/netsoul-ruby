@@ -28,7 +28,7 @@ gem install netsoul
 #### Gemfile
 
 ```ruby
-gem 'netsoul', '~> 1.9.1'
+gem 'netsoul', '~> 1.9.2'
 ```
 
 #### project.rb
@@ -40,6 +40,14 @@ require 'netsoul'
 ## Use the client
 
 After installing the gem **netsoul**, call the client as described bellow.
+
+Define at least two environment variables : `NETSOUL_LOGIN` and `NETSOUL_SOCKS_PASSWORD` (see the config for the complete list: [https://github.com/fenicks/netsoul-ruby]()).
+
+```bash
+netsoul-ruby
+```
+
+or with a config file
 
 ```bash
 netsoul-ruby -config netsoul-config.yml
@@ -78,7 +86,7 @@ netsoul-ruby -config netsoul-config.yml
 ## Use the library in custom Netsoul Ruby client
 
 Look at the client implementation in this gem: [https://github.com/fenicks/netsoul-ruby/blob/master/bin/netsoul-ruby]().
-This client is implemented in less than 150 lines of code.
+This client is implemented in less than 150 lines of code ; including option parser, client reconnection, ...
 
 ## Contributing
 

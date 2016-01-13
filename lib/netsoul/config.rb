@@ -43,7 +43,7 @@ module Netsoul
       @user_group = ENV['NETSOUL_USER_GROUP'] || opts.fetch(:user_group, 'ETNA_2008'.freeze)
       @user_connection_info = {}
 
-      @client_name = ENV['NETSOUL_CLIENT_NAME'] || opts.fetch(:client_name, '(Netsoul-Ruby) -> { Christian Kakesa, since 2009}'.freeze)
+      @client_name = ENV['NETSOUL_CLIENT_NAME'] || opts.fetch(:client_name, "(Netsoul-Ruby v#{Netsoul::VERSION}) -> { Christian Kakesa, since 2009}".freeze)
     end
 
     def build_user_connection_info(opts = {})

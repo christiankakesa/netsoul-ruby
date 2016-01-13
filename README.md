@@ -3,9 +3,9 @@
 * formerly __libnetsoul-rb__
 
 This gem is a simple and efficient Netsoul client implementation written in Ruby.
-You can use it as a Ruby gem in order to implement your own Netsoul client in Ruby or just use the provided Netsoul client.
+You can use it as a Ruby gem in order to implement your own Netsoul client or just use the provided Netsoul client.
 
-*__[History]__: 8 years after writing my first ruby lines of code, I decide to rewrite this old own with all my Ruby backgrounds.*
+*__[History]__: 8 years after writing my first ruby lines of code, I decide to rewrite this old own with all my Ruby backgrounds. The old design was really bad.*
 
 ## Features
 
@@ -28,7 +28,7 @@ gem install netsoul
 #### Gemfile
 
 ```ruby
-gem 'netsoul', '~> 1.9.2'
+gem 'netsoul', '~> 2.0.0'
 ```
 
 #### project.rb
@@ -96,9 +96,9 @@ c.connect
 # ...
 if c.started
   # ...
-  c.sock_send str
+  c.send str
   # ...
-  msg = c.sock_get
+  msg = c.get
   #...
 end
 # ...

@@ -6,7 +6,7 @@ module Netsoul
     include Logging
     attr_reader :started
     SOCKET_READ_TIMEOUT = 12 * 60
-    SOCKET_WRITE_TIMEOUT = 10
+    SOCKET_WRITE_TIMEOUT = 1 * 60
 
     def initialize(*args)
       opts = args.last.is_a?(Hash) ? args.last : {}

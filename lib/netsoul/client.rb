@@ -59,7 +59,11 @@ module Netsoul
     def send(str)
       _, sock = IO.select(nil, [@socket], nil, SOCKET_WRITE_TIMEOUT)
       fail Netsoul::SocketError, 'Timeout or fail on write socket' if sock.nil? || sock.empty?
-      sock.first.puts str
+      s = sock.first
+      if s
+        s.puts str
+        s.flush
+      end
       log :info, "[send] #{str.chomp}"
     end
 
@@ -67,8 +71,12 @@ module Netsoul
       sock, = IO.select([@socket], nil, nil, SOCKET_READ_TIMEOUT)
       fail Netsoul::SocketError, 'Timeout or fail on read socket' if sock.nil? || sock.empty?
       res = sock.first.gets
-      log :info, "[get ] #{res.chomp}" if res
-      res || ''
+      if res
+        log :info, "[get ] #{res.chomp}"
+        res
+      else
+        'nothing' # Send some string and permit IO.select to thrown exception if something goes wrong.
+      end
     end
 
     def close

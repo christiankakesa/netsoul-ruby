@@ -6,7 +6,7 @@ module Netsoul
   class Message
     class << self
       def _standard_auth_string(c)
-        str = "#{c.user_connection_info[:md5_hash]}"
+        str = c.user_connection_info[:md5_hash]
         str << "-#{c.user_connection_info[:client_ip]}"
         str << "/#{c.user_connection_info[:client_port]}#{c.socks_password}"
         Digest::MD5.hexdigest(str)
@@ -122,7 +122,7 @@ module Netsoul
     class << self
       def get(ip)
         locations.each do |key, val|
-          return "#{key}".freeze if ip.match(/^#{val}/)
+          return key.to_s if ip.match(/^#{val}/)
         end
         'ext'.freeze
       end

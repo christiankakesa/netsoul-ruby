@@ -122,7 +122,7 @@ module Netsoul
     class << self
       def get(ip)
         locations.each do |key, val|
-          return key.to_s if ip.match(/^#{val}/)
+          return key.to_s if ip =~ /^#{val}/
         end
         'ext'.freeze
       end

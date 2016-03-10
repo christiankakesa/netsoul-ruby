@@ -20,5 +20,5 @@ Style/Documentation:
   Enabled: false
 
 AllCops:
-  Excludes:
+  Exclude:
     - 'bin/**/*'

@@ -21,6 +21,8 @@ module Netsoul
 
       # :nocov:
       def _kerberos_get
+        require 'netsoul_kerberos'
+
         @netsoul_kerberos ||= NetsoulKerberos.new
       rescue LoadError => e
         raise Netsoul::Error, "NetsoulKerberos library not found: #{e}.".freeze
@@ -34,8 +36,6 @@ module Netsoul
       end
 
       def kerberos_auth(config)
-        require 'netsoul_kerberos'
-
         unless _kerberos_get.build_token(config.login, config.unix_password)
           fail Netsoul::Error, 'Impossible to retrieve the kerberos token.'.freeze
         end
@@ -165,6 +165,7 @@ module Netsoul
             epita: '10.'.freeze
         }
       end
+      # rubocop:enable all
     end
   end
 end

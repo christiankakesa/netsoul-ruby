@@ -9,7 +9,7 @@ $stderr.sync = true
 require 'optparse'
 require 'yaml'
 
-process_name_string = "#{__FILE__} #{ARGV.join(' ')}".freeze
+process_name_string = "#{__FILE__} #{ARGV.join(' '.freeze)}".freeze
 Process.respond_to?(:setproctitle) ? Process.setproctitle(process_name_string) : $PROGRAM_NAME = process_name_string
 
 options = {}
@@ -22,7 +22,7 @@ OptionParser.new do |opts|
     options[:user_opts] = YAML.load_file(file) if File.file?(file)
   end
 
-  opts.on('-h'.freeze, '--help', 'Display this screen'.freeze) do
+  opts.on('-h'.freeze, '--help'.freeze, 'Display this screen'.freeze) do
     puts opts
     exit 42
   end

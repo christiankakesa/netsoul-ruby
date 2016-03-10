@@ -16,7 +16,7 @@ module Netsoul
 
     def auth_ag
       send(Message.auth_ag)
-      fail Netsoul::IdentificationError, 'Identification failed.'.freeze unless get.split(' ')[1] == '002'.freeze
+      fail Netsoul::IdentificationError, 'Identification failed.'.freeze unless get.split(' '.freeze)[1] == '002'.freeze
     end
     private :auth_ag
 
@@ -26,7 +26,8 @@ module Netsoul
       else
         send(Message.standard_auth(@config))
       end
-      fail Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze unless get.split(' ')[1] == '002'
+      fail Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze \
+      unless get.split(' '.freeze)[1] == '002'.freeze
     end
     private :auth_method
 
@@ -58,7 +59,7 @@ module Netsoul
 
     def send(str)
       _, sock = IO.select(nil, [@socket], nil, SOCKET_WRITE_TIMEOUT)
-      fail Netsoul::SocketError, 'Timeout or fail on write socket' if sock.nil? || sock.empty?
+      fail Netsoul::SocketError, 'Timeout or fail on write socket'.freeze if sock.nil? || sock.empty?
       s = sock.first
       if s
         s.puts str
@@ -69,13 +70,13 @@ module Netsoul
 
     def get
       sock, = IO.select([@socket], nil, nil, SOCKET_READ_TIMEOUT)
-      fail Netsoul::SocketError, 'Timeout or fail on read socket' if sock.nil? || sock.empty?
+      fail Netsoul::SocketError, 'Timeout or fail on read socket'.freeze if sock.nil? || sock.empty?
       res = sock.first.gets
       if res
         log :info, "[get ] #{res.chomp}"
         res
       else
-        'nothing' # Send some string and permit IO.select to thrown exception if something goes wrong.
+        'nothing'.freeze # Send some string and permit IO.select to thrown exception if something goes wrong.
       end
     end
 

@@ -76,7 +76,7 @@ describe Netsoul do
 
     it 'returns kerberos_auth message' do
       c = Netsoul::Config.new auth_method: :krb5
-      expect { Netsoul::Message.kerberos_auth(c) }.to raise_exception
+      expect { Netsoul::Message.kerberos_auth(c) }.to raise_exception Netsoul::Error
 
       # FIXME(fenicks): EPITECH Kerberos server is probably not working!
       # If this authentication method is not removed, remove the :nocov: mark around 'Netsoul::Message.kerberos_auth'

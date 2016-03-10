@@ -45,6 +45,7 @@ module Netsoul
 
       @client_name = ENV['NETSOUL_CLIENT_NAME'] || opts.fetch(:client_name, "(Netsoul-Ruby v#{Netsoul::VERSION}) -> { Christian Kakesa, since 2009}".freeze)
     end
+    # rubocop:enable all
 
     def build_user_connection_info(opts = {})
       return unless opts.is_a?(Hash)

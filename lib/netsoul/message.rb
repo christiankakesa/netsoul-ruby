@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 require 'base64'
 require 'digest/md5'
 require 'uri'

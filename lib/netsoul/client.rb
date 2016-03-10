@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 require_relative '../netsoul'
 require 'socket'
 

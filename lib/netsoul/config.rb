@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 module Netsoul
   class Config
     AUTH_METHODS = [:std, :krb5].freeze

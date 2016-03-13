@@ -68,6 +68,9 @@ module Netsoul
         s.flush
       end
       log :info, "[send] #{str.chomp}"
+    rescue Errno::EPIPE
+      disconnect
+      connect
     end
 
     def get
@@ -80,6 +83,9 @@ module Netsoul
       else
         'nothing'.freeze # Send some string and permit IO.select to thrown exception if something goes wrong.
       end
+    rescue Errno::EPIPE
+      disconnect
+      connect
     end
 
     def close

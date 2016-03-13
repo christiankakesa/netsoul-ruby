@@ -1,4 +1,4 @@
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 require 'base64'
 require 'digest/md5'
@@ -8,7 +8,7 @@ module Netsoul
   class Message
     class << self
       def _standard_auth_string(c)
-        str = c.user_connection_info[:md5_hash]
+        str = c.user_connection_info[:md5_hash].dup
         str << "-#{c.user_connection_info[:client_ip]}"
         str << "/#{c.user_connection_info[:client_port]}#{c.socks_password}"
         Digest::MD5.hexdigest(str)

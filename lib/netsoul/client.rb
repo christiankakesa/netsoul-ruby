@@ -18,7 +18,7 @@ module Netsoul
 
     def auth_ag
       send(Message.auth_ag)
-      fail Netsoul::IdentificationError, 'Identification failed.'.freeze unless get.split(' '.freeze)[1] == '002'.freeze
+      raise Netsoul::IdentificationError, 'Identification failed.'.freeze unless get.split(' '.freeze)[1] == '002'.freeze
     end
     private :auth_ag
 
@@ -28,7 +28,7 @@ module Netsoul
       else
         send(Message.standard_auth(@config))
       end
-      fail Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze \
+      raise Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze \
       unless get.split(' '.freeze)[1] == '002'.freeze
     end
     private :auth_method
@@ -41,7 +41,7 @@ module Netsoul
 
     def connect
       @socket = TCPSocket.new(@config.server_host, @config.server_port)
-      fail Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @socket
+      raise Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @socket
       _cmd, _socket_num, md5_hash, client_ip, client_port, _server_timestamp = get.split
 
       @config.build_user_connection_info md5_hash: md5_hash, client_ip: client_ip, client_port: client_port
@@ -61,7 +61,7 @@ module Netsoul
 
     def send(str)
       _, sock = IO.select(nil, [@socket], nil, SOCKET_WRITE_TIMEOUT)
-      fail Netsoul::SocketError, 'Timeout or fail on write socket'.freeze if sock.nil? || sock.empty?
+      raise Netsoul::SocketError, 'Timeout or raise on write socket'.freeze if sock.nil? || sock.empty?
       s = sock.first
       if s
         s.puts str
@@ -72,7 +72,7 @@ module Netsoul
 
     def get
       sock, = IO.select([@socket], nil, nil, SOCKET_READ_TIMEOUT)
-      fail Netsoul::SocketError, 'Timeout or fail on read socket'.freeze if sock.nil? || sock.empty?
+      raise Netsoul::SocketError, 'Timeout or raise on read socket'.freeze if sock.nil? || sock.empty?
       res = sock.first.gets
       if res
         log :info, "[get ] #{res.chomp}"

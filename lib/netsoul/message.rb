@@ -39,7 +39,7 @@ module Netsoul
 
       def kerberos_auth(config)
         unless _kerberos_get.build_token(config.login, config.unix_password)
-          fail Netsoul::Error, 'Impossible to retrieve the kerberos token.'.freeze
+          raise Netsoul::Error, 'Impossible to retrieve the kerberos token.'.freeze
         end
         _kerberos_auth_klog(config)
       end

@@ -37,6 +37,15 @@ if options.empty? || options[:user_opts].size == 0
   end
 end
 
+def trap_interrupt(client)
+  Signal.trap('INT'.freeze) do
+    exit 42 unless client.started
+    begin client.disconnect; end
+    puts '!!! [SIGINT] !!!'.freeze
+    exit 42
+  end
+end
+
 retry_count = 10
 retry_wait_time = 1.0
 RETRY_WAIT_FACTOR = 2.0 # Each time retry is called in Exception block, current 'retry_wait_time' is increased with this factor
@@ -44,6 +53,7 @@ begin
   c = Netsoul::Client.new options[:user_opts]
   c.connect
   if c.started
+    trap_interrupt c
     retry_count = 10
     retry_wait_time = 1.0
     loop do
@@ -52,10 +62,6 @@ begin
       sleep 1
     end
   end
-rescue Interrupt
-  begin c.disconnect; end
-  puts '!!! [SIGINT] !!!'.freeze
-  exit 42
 rescue => e
   puts "[ERROR]: #{e}"
   puts "[RETRY_COUNT]: #{retry_count}"

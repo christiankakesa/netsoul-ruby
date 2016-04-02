@@ -83,7 +83,7 @@ module Netsoul
     end
 
     def close
-      @socket.close
+      @socket.close if @socket
     ensure
       @started = false
     end

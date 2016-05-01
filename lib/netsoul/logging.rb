@@ -11,7 +11,8 @@ module Netsoul
     end
 
     def self.logger
-      @logger ||= ::Logger.new(STDERR).tap do |logger|
+      @logger ||= ::Logger.new(STDOUT).tap do |logger|
+        $stdout.sync = true
         logger.level = Logger::INFO
         logger.formatter = proc do |severity, datetime, _progname, msg|
           "#{severity} [#{datetime.strftime('%Y-%m-%d %H:%M:%S.%L'.freeze)}] #{msg}\n"

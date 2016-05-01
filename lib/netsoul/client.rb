@@ -5,7 +5,6 @@ require 'socket'
 
 module Netsoul
   class Client
-    include Logging
     attr_reader :started
     SOCKET_READ_TIMEOUT = 12 * 60
     SOCKET_WRITE_TIMEOUT = 1 * 60
@@ -66,7 +65,6 @@ module Netsoul
       raise Netsoul::SocketError, 'Timeout or raise on write socket'.freeze unless s
       s.puts str
       s.flush
-      log :info, "[send] #{str}"
     end
 
     def get
@@ -75,10 +73,8 @@ module Netsoul
       raise Netsoul::SocketError, 'Timeout or raise on read socket'.freeze unless s
       res = s.gets.chomp
       if !res.empty?
-        log :info, "[get ] #{res}"
         res
       else
-        log :warn, '[get ] (<was empty!!!>)'.freeze
         'nothing'.freeze # Send some string and permit IO.select to thrown exception if something goes wrong.
       end
     end

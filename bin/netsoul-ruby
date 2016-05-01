@@ -47,22 +47,28 @@ end
 retry_count = 10
 retry_wait_time = 1.0
 RETRY_WAIT_FACTOR = 2.0 # Each time retry is called in Exception block, current 'retry_wait_time' is increased with this factor
+
+include Netsoul::Logging
 begin
   c = Netsoul::Client.new options[:user_opts]
   c.connect
   if c.started
+    log :info, '[connection:ok] successfully connected to the Netsoul server'
     trap_interrupt c
     retry_count = 10
     retry_wait_time = 1.0
     loop do
       res = c.get
-      c.send res if res.to_s.match(/^ping.*/)
-      sleep 1
+      res != 'nothing'.freeze ? log(:info, "[get ] #{res}") : log(:warn, '[get ] (<was empty!!!>)'.freeze)
+      if res.to_s.match(/^ping.*/)
+        c.send res
+        log :info, "[send] #{res}"
+      end
     end
   end
 rescue => e
-  puts "[ERROR]: #{e}"
-  puts "[RETRY_COUNT]: #{retry_count}"
+  log :error, "[EXCEPTION!!]: #{e}"
+  log :error, "[RETRY_COUNT]: #{retry_count}"
   begin c.disconnect; end
   if retry_count > 0
     retry_count -= 1

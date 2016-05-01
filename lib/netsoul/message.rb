@@ -27,7 +27,7 @@ module Netsoul
 
         @netsoul_kerberos ||= NetsoulKerberos.new
       rescue LoadError => e
-        raise Netsoul::Error, "NetsoulKerberos library not found: #{e}.".freeze
+        raise Netsoul::Error, "NetsoulKerberos library not found: #{e}."
       end
 
       def _kerberos_auth_klog(config)

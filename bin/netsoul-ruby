@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-lib = File.join(File.dirname(File.realpath(__FILE__)), '..', 'lib')
+lib = File.join(File.dirname(File.realpath(__FILE__)), '..'.freeze, 'lib'.freeze)
 $LOAD_PATH.unshift File.expand_path(lib)
 
 require 'netsoul/client'
 
-$stderr.sync = true
 require 'optparse'
 require 'yaml'
 

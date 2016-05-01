@@ -55,37 +55,38 @@ module Netsoul
 
     def disconnect
       send(Message.ns_exit)
-    ensure
       close
+    ensure
+      @started = false
     end
 
     def send(str)
       _, sock = IO.select(nil, [@socket], nil, SOCKET_WRITE_TIMEOUT)
-      raise Netsoul::SocketError, 'Timeout or raise on write socket'.freeze if sock.nil? || sock.empty?
       s = sock.first
-      if s
-        s.puts str
-        s.flush
-      end
-      log :info, "[send] #{str.chomp}"
+      raise Netsoul::SocketError, 'Timeout or raise on write socket'.freeze unless s
+      s.puts str
+      s.flush
+      log :info, "[send] #{str}"
     end
 
     def get
       sock, = IO.select([@socket], nil, nil, SOCKET_READ_TIMEOUT)
-      raise Netsoul::SocketError, 'Timeout or raise on read socket'.freeze if sock.nil? || sock.empty?
-      res = sock.first.gets
-      if res
-        log :info, "[get ] #{res.chomp}"
+      s = sock.first
+      raise Netsoul::SocketError, 'Timeout or raise on read socket'.freeze unless s
+      res = s.gets.chomp
+      if !res.empty?
+        log :info, "[get ] #{res}"
         res
       else
+        log :warn, '[get ] (<was empty!!!>)'.freeze
         'nothing'.freeze # Send some string and permit IO.select to thrown exception if something goes wrong.
       end
     end
 
+    private
+
     def close
       @socket.close if @socket
-    ensure
-      @started = false
     end
   end
 end

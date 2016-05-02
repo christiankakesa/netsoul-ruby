@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'logger'
+require_relative 'version'
 
 module Netsoul
   module Logging # :nodoc:
-    PREFIX = '[Netsoul-Ruby]'.freeze
+    PREFIX = "[Netsoul-Ruby:v#{Netsoul::VERSION}]".freeze
 
     class << self
       attr_writer :logger

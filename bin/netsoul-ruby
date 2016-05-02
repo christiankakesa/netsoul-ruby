@@ -53,7 +53,7 @@ begin
   c = Netsoul::Client.new options[:user_opts]
   c.connect
   if c.started
-    log :info, "[netsoul-ruby v#{Netsoul::VERSION}:connection:ok] successfully connected to the Netsoul server"
+    log :info, '[connection:ok] successfully connected to the Netsoul server'
     trap_interrupt c
     retry_count = 10
     retry_wait_time = 1.0

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../netsoul'
 require 'socket'
+require_relative '../netsoul'
 
 module Netsoul
   class Client

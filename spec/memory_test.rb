@@ -1,3 +1,5 @@
+exit 0 unless RUBY_VERSION >= '2.1.0'
+
 require 'memory_profiler'
 
 require_relative '../lib/netsoul/client'

@@ -1,4 +1,3 @@
-require 'objspace'
 require 'memory_profiler'
 
 require_relative '../lib/netsoul/client'

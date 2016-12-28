@@ -16,7 +16,7 @@ module Netsoul
         $stdout.sync = true
         logger.level = Logger::INFO
         logger.formatter = proc do |severity, datetime, _progname, msg|
-          "#{severity} [#{datetime.strftime('%Y-%m-%d %H:%M:%S.%L'.freeze)}] #{msg}\n"
+          "#{severity} [#{datetime.strftime('%Y-%m-%d %H:%M:%S.%L')}] #{msg}\n"
         end
       end
     end

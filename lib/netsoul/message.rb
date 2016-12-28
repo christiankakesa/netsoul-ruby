@@ -16,7 +16,7 @@ module Netsoul
 
       def standard_auth(config)
         client_ip = config.user_connection_info[:client_ip]
-        location = Message._escape(Location.get(client_ip) == 'ext'.freeze ? config.location : Location.get(client_ip))
+        location = Message._escape(Location.get(client_ip) == 'ext' ? config.location : Location.get(client_ip))
         client_name = Message._escape(config.client_name)
         "ext_user_log #{config.login} #{_standard_auth_string(config)} #{client_name} #{location}"
       end
@@ -39,14 +39,14 @@ module Netsoul
 
       def kerberos_auth(config)
         unless _kerberos_get.build_token(config.login, config.unix_password)
-          raise Netsoul::Error, 'Impossible to retrieve the kerberos token.'.freeze
+          raise Netsoul::Error, 'Impossible to retrieve the kerberos token.'
         end
         _kerberos_auth_klog(config)
       end
       # :nocov:
 
       def auth_ag
-        'auth_ag ext_user none none'.freeze
+        'auth_ag ext_user none none'
       end
 
       def send_message(user, msg)
@@ -74,7 +74,7 @@ module Netsoul
       end
 
       def attach
-        'user_cmd attach'.freeze
+        'user_cmd attach'
       end
 
       def user_state(state, timestamp)
@@ -102,16 +102,16 @@ module Netsoul
       end
 
       def ping
-        'pong'.freeze
+        'pong'
       end
 
       def ns_exit
-        'exit'.freeze
+        'exit'
       end
 
       def _escape(str)
-        str = URI.escape(str, Regexp.new("#{URI::PATTERN::ALNUM}[:graph:][:punct:][:cntrl:][:print:][:blank:]", false, 'N'.freeze))
-        URI.escape(str, Regexp.new("[^#{URI::PATTERN::ALNUM}]", false, 'N'.freeze))
+        str = URI.escape(str, Regexp.new("#{URI::PATTERN::ALNUM}[:graph:][:punct:][:cntrl:][:print:][:blank:]", false, 'N'))
+        URI.escape(str, Regexp.new("[^#{URI::PATTERN::ALNUM}]", false, 'N'))
       end
 
       def _unescape(str)
@@ -126,45 +126,45 @@ module Netsoul
         locations.each do |key, val|
           return key.to_s if ip =~ /^#{val}/
         end
-        'ext'.freeze
+        'ext'
       end
 
       # rubocop:disable all
       def locations
         @locations ||= {
-            :'lab-cisco-mid-sr' => '10.251.'.freeze,
-            etna: '10.245.'.freeze,
-            lse: '10.227.42.'.freeze,
-            :'sda-1' => '10.227.4.'.freeze,
-            lab: '10.227.'.freeze,
-            :'lab-tcom' => '10.226.7.'.freeze,
-            :'lab-acu' => '10.226.6.'.freeze,
-            :'lab-console' => '10.226.5.'.freeze,
-            :'lab-mspe' => '10.226.'.freeze,
-            epitanim: '10.225.19.'.freeze,
-            epidemic: '10.225.18.'.freeze,
-            :'sda-2' => '10.225.10.'.freeze,
-            cycom: '10.225.8.'.freeze,
-            epx: '10.225.7.'.freeze,
-            prologin: '10.225.6.'.freeze,
-            nomad: '10.225.2.'.freeze,
-            assos: '10.225.'.freeze,
-            sda: '10.224.14.'.freeze,
-            www: '10.223.106.'.freeze,
-            episport: '10.223.104.'.freeze,
-            epicom: '10.223.103.'.freeze,
-            :'bde-epita' => '10.223.100.'.freeze,
-            omatis: '10.223.42.'.freeze,
-            ipsa: '10.223.15.'.freeze,
-            lrde: '10.223.13.'.freeze,
-            cvi: '10.223.7.'.freeze,
-            epi: '10.223.1.'.freeze,
-            pasteur: '10.223.'.freeze,
-            bocal: '10.42.42.'.freeze,
-            sm: '10.42.'.freeze,
-            vpn: '10.10.'.freeze,
-            adm: '10.1.'.freeze,
-            epita: '10.'.freeze
+            :'lab-cisco-mid-sr' => '10.251.',
+            etna: '10.245.',
+            lse: '10.227.42.',
+            :'sda-1' => '10.227.4.',
+            lab: '10.227.',
+            :'lab-tcom' => '10.226.7.',
+            :'lab-acu' => '10.226.6.',
+            :'lab-console' => '10.226.5.',
+            :'lab-mspe' => '10.226.',
+            epitanim: '10.225.19.',
+            epidemic: '10.225.18.',
+            :'sda-2' => '10.225.10.',
+            cycom: '10.225.8.',
+            epx: '10.225.7.',
+            prologin: '10.225.6.',
+            nomad: '10.225.2.',
+            assos: '10.225.',
+            sda: '10.224.14.',
+            www: '10.223.106.',
+            episport: '10.223.104.',
+            epicom: '10.223.103.',
+            :'bde-epita' => '10.223.100.',
+            omatis: '10.223.42.',
+            ipsa: '10.223.15.',
+            lrde: '10.223.13.',
+            cvi: '10.223.7.',
+            epi: '10.223.1.',
+            pasteur: '10.223.',
+            bocal: '10.42.42.',
+            sm: '10.42.',
+            vpn: '10.10.',
+            adm: '10.1.',
+            epita: '10.'
         }
       end
       # rubocop:enable all

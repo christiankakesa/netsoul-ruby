@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-source 'https://rubygems.org'.freeze
+source 'https://rubygems.org'
 
 # Specify your gem's dependencies in netsoul.gemspec
 gemspec

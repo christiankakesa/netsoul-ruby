@@ -17,7 +17,7 @@ module Netsoul
 
     def auth_ag
       send(Message.auth_ag)
-      raise Netsoul::IdentificationError, 'Identification failed.'.freeze unless get.split(' '.freeze)[1] == '002'.freeze
+      raise Netsoul::IdentificationError, 'Identification failed.' unless get.split(' ')[1] == '002'
     end
     private :auth_ag
 
@@ -27,8 +27,8 @@ module Netsoul
       else
         send(Message.standard_auth(@config))
       end
-      raise Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables'.freeze \
-      unless get.split(' '.freeze)[1] == '002'.freeze
+      raise Netsoul::AuthenticationError, 'Authentication failed. See your config file or environment variables' \
+      unless get.split(' ')[1] == '002'
     end
     private :auth_method
 
@@ -40,7 +40,7 @@ module Netsoul
 
     def connect
       @socket = TCPSocket.new(@config.server_host, @config.server_port)
-      raise Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.'.freeze unless @socket
+      raise Netsoul::SocketError, 'Could not open a socket. Connection is unavailable.' unless @socket
       _cmd, _socket_num, md5_hash, client_ip, client_port, _server_timestamp = get.split
 
       @config.build_user_connection_info md5_hash: md5_hash, client_ip: client_ip, client_port: client_port
@@ -62,7 +62,7 @@ module Netsoul
     def send(str)
       _, sock = IO.select(nil, [@socket], nil, SOCKET_WRITE_TIMEOUT)
       s = sock.first
-      raise Netsoul::SocketError, 'Timeout or raise on write socket'.freeze unless s
+      raise Netsoul::SocketError, 'Timeout or raise on write socket' unless s
       s.puts str
       s.flush
     end
@@ -70,12 +70,12 @@ module Netsoul
     def get
       sock, = IO.select([@socket], nil, nil, SOCKET_READ_TIMEOUT)
       s = sock.first
-      raise Netsoul::SocketError, 'Timeout or raise on read socket'.freeze unless s
+      raise Netsoul::SocketError, 'Timeout or raise on read socket' unless s
       res = s.gets.chomp
       if !res.empty?
         res
       else
-        'nothing'.freeze # Send some string and permit IO.select to thrown exception if something goes wrong.
+        'nothing' # Send some string and permit IO.select to thrown exception if something goes wrong.
       end
     end
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-lib = File.join(File.dirname(File.realpath(__FILE__)), '..'.freeze, 'lib'.freeze)
+lib = File.join(File.dirname(File.realpath(__FILE__)), '..', 'lib')
 $LOAD_PATH.unshift File.expand_path(lib)
 
 require 'netsoul/client'
@@ -9,20 +9,20 @@ require 'netsoul/client'
 require 'optparse'
 require 'yaml'
 
-process_name_string = "#{__FILE__} #{ARGV.join(' '.freeze)}".freeze
+process_name_string = "#{__FILE__} #{ARGV.join(' ')}"
 Process.respond_to?(:setproctitle) ? Process.setproctitle(process_name_string) : $PROGRAM_NAME = process_name_string
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = 'Usage: netsoul-ruby [options]'.freeze
-  opts.separator ''.freeze
-  opts.separator 'Netsoul-Ruby options:'.freeze
+  opts.banner = 'Usage: netsoul-ruby [options]'
+  opts.separator ''
+  opts.separator 'Netsoul-Ruby options:'
 
-  opts.on('-c'.freeze, '--config FILE'.freeze, 'Configuration file in YAML'.freeze) do |file|
+  opts.on('-c', '--config FILE', 'Configuration file in YAML') do |file|
     options[:user_opts] = YAML.load_file(file) if File.file?(file)
   end
 
-  opts.on('-h'.freeze, '--help'.freeze, 'Display this screen'.freeze) do
+  opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit 42
   end
@@ -30,16 +30,16 @@ end.parse!
 
 if options.empty? || options[:user_opts].size == 0
   unless ENV.to_a.count { |k, _v| %w(NETSOUL_LOGIN NETSOUL_SOCKS_PASSWORD NETSOUL_LOGIN NETSOUL_UNIX_PASSWORD NETSOUL_AUTH_METHOD).include?(k) } >= 2
-    puts '[ERROR] You have to specify a configuration file or environment variables'.freeze
+    puts '[ERROR] You have to specify a configuration file or environment variables'
     exit 42
   end
 end
 
 def trap_interrupt(client)
-  Signal.trap('INT'.freeze) do
+  Signal.trap('INT') do
     exit 42 unless client.started
     begin client.disconnect; end
-    puts '!!! [SIGINT] !!!'.freeze
+    puts '!!! [SIGINT] !!!'
     exit 42
   end
 end
@@ -59,7 +59,7 @@ begin
     retry_wait_time = 1.0
     loop do
       res = c.get
-      res != 'nothing'.freeze ? log(:info, "[get ] #{res}") : log(:warn, '[get ] (<was empty!!!>)'.freeze)
+      res != 'nothing' ? log(:info, "[get ] #{res}") : log(:warn, '[get ] (<was empty!!!>)')
       if res.to_s.match(/^ping.*/)
         c.send res
         log :info, "[send] #{res}"

@@ -34,18 +34,18 @@ module Netsoul
     #
     # rubocop:disable all
     def initialize(opts = {})
-      @server_host = ENV['NETSOUL_SERVER_HOST'] || opts.fetch(:server_host, 'ns-server.epita.fr'.freeze)
+      @server_host = ENV['NETSOUL_SERVER_HOST'] || opts.fetch(:server_host, 'ns-server.epita.fr')
       @server_port = Integer(ENV['NETSOUL_SERVER_PORT'] || opts.fetch(:server_port, 4242))
-      @login = ENV['NETSOUL_LOGIN'] || opts.fetch(:login, 'ionis'.freeze)
-      @socks_password = ENV['NETSOUL_SOCKS_PASSWORD'] || opts.fetch(:socks_password, 'socks_password'.freeze)
-      @unix_password = ENV['NETSOUL_UNIX_PASSWORD'] || opts.fetch(:unix_password, 'unix_password'.freeze)
+      @login = ENV['NETSOUL_LOGIN'] || opts.fetch(:login, 'ionis')
+      @socks_password = ENV['NETSOUL_SOCKS_PASSWORD'] || opts.fetch(:socks_password, 'socks_password')
+      @unix_password = ENV['NETSOUL_UNIX_PASSWORD'] || opts.fetch(:unix_password, 'unix_password')
       @auth_method = (ENV['NETSOUL_AUTH_METHOD'] || (AUTH_METHODS.include?(opts[:auth_method]) ? opts[:auth_method] : :std)).to_sym
       @state = (ENV['NETSOUL_STATE'] || (USER_STATES.include?(opts[:state]) ? opts[:state] : :none)).to_sym
-      @location = ENV['NETSOUL_LOCATION'] || opts.fetch(:location, 'Home'.freeze)
-      @user_group = ENV['NETSOUL_USER_GROUP'] || opts.fetch(:user_group, 'ETNA_2008'.freeze)
+      @location = ENV['NETSOUL_LOCATION'] || opts.fetch(:location, 'Home')
+      @user_group = ENV['NETSOUL_USER_GROUP'] || opts.fetch(:user_group, 'ETNA_2008')
       @user_connection_info = {}
 
-      @client_name = ENV['NETSOUL_CLIENT_NAME'] || opts.fetch(:client_name, "(Netsoul-Ruby v#{Netsoul::VERSION}) -> { Christian Kakesa, since 2009}".freeze)
+      @client_name = ENV['NETSOUL_CLIENT_NAME'] || opts.fetch(:client_name, "(Netsoul-Ruby v#{Netsoul::VERSION}) -> { Christian Kakesa, since 2009}")
     end
     # rubocop:enable all
 
